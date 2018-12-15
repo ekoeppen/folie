@@ -118,8 +118,6 @@ func blockUntilOpen() {
 		tty.SetRTS(true)
 		tty.SetDTR(false)
 	} else {
-		// this delay avoids massive reconnects with ser2net to a usb-console
-		time.Sleep(time.Second)
 		telnetInit()
 	}
 }
@@ -153,9 +151,6 @@ func SerialConnect() {
 			n, err := dev.Read(data)
 			if err != nil {
 				break
-			}
-			if !*raw {
-				n = telnetClean(data, n)
 			}
 			if n > 0 {
 				serialRecv <- data[:n]

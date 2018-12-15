@@ -83,11 +83,7 @@ func sendByte(b uint8) {
 	if *verbose {
 		fmt.Printf(">%02X", b)
 	}
-	if !*raw && b == Iac {
-		serialSend <- []byte{b, b}
-	} else {
-		serialSend <- []byte{b}
-	}
+	serialSend <- []byte{b}
 	checkSum ^= b
 }
 
