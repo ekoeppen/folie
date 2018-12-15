@@ -17,10 +17,9 @@ import (
 )
 
 var (
-	port     = flag.String("p", "", "serial port (COM*, /dev/cu.*, or /dev/tty*)")
-	baud     = flag.Int("b", 115200, "serial baud rate")
-	raw      = flag.Bool("r", false, "use raw instead of telnet protocol")
-	throttle = flag.Int("t", 1000, "throttle outgoing data using chunks")
+	port = flag.String("p", "", "serial port (COM*, /dev/cu.*, or /dev/tty*)")
+	baud = flag.Int("b", 115200, "serial baud rate")
+	raw  = flag.Bool("r", false, "use raw instead of telnet protocol")
 
 	tty     serial.Port        // only used for serial connections
 	dev     io.ReadWriteCloser // used for both serial and tcp connections
