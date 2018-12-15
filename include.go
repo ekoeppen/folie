@@ -54,7 +54,7 @@ func IncludeFile(name string, level int) bool {
 				}
 			}
 		} else {
-			serialSend <- []byte(line + "\r")
+			serialSend <- []byte(line + "\n")
 			if !match(line) {
 				return false
 			}
@@ -89,6 +89,8 @@ func match(expect string) bool {
 		select {
 
 		case data := <-serialRecv:
+			data = bytes.Replace(data, []byte{'\r', '\n'}, []byte{'\n'}, -1)
+			data = bytes.Replace(data, []byte{'\r'}, []byte{'\n'}, -1)
 			pending = append(pending, data...)
 			if !timer.Stop() {
 				<-timer.C
@@ -104,17 +106,13 @@ func match(expect string) bool {
 			}
 
 			lines := bytes.Split(pending, []byte{'\n'})
-			n := len(lines)
-			for i := 0; i < n-2; i++ {
-				fmt.Printf("%s\n", lines[i])
-			}
-			lines = lines[n-2:]
-
+			//n := len(lines)
+			//lines = lines[n-2:]
 			last := string(lines[0])
-			if len(lines[1]) == 0 {
+			//if len(lines[1]) == 0 {
 				hasExpected := strings.HasPrefix(last, expect+" ")
-				if hasExpected || strings.HasSuffix(last, " ok.") {
-					if last != expect+"  ok." {
+				if hasExpected || strings.HasSuffix(last, " ok.") || strings.HasSuffix(last, " ok ") {
+					if last != expect+"  ok." && last != expect+"  ok " {
 						msg := last
 						// only show output if source does not start with "("
 						// ... in that case, show just the comment up to ")"
@@ -129,15 +127,13 @@ func match(expect string) bool {
 						if msg == "" {
 							return true // don't show empty [if]-skipped lines
 						}
-						fmt.Printf("%s\n", msg)
 						if hasFatalError(last) {
 							return false // no point in keeping going
 						}
 					}
 					return true
 				}
-			}
-			fmt.Printf("%s\n", last)
+			//}
 			pending = lines[1]
 
 		case <-timer.C:

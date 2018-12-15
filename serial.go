@@ -180,27 +180,12 @@ func SerialDispatch() {
 			if dev == nil { // avoid write-while-closed panics
 				fmt.Printf("[CAN'T WRITE! %s]\n", *port)
 				return
-			} else {
-				// send data in chunks of at most "throttle" chars, with a 1 ms
-				// delay between them, so USB gets a chance to keep up - this
-				// helps avoid data loss with Nucleo boards using ST-Link V2's
-				for len(data) > 0 {
-					s := data
-					if len(s) > *throttle {
-						s = s[:*throttle]
-					}
-					if _, err := dev.Write(s); err != nil {
-						fmt.Printf("[WRITE ERROR! %s]\n", *port)
-						if dev != nil {
-							dev.Close()
-						}
-						return
-					}
-					data = data[len(s):]
-					if len(data) > 0 {
-						time.Sleep(time.Millisecond)
-					}
+			} else if _, err := dev.Write(data); err != nil {
+				fmt.Printf("[WRITE ERROR! %s]\n", *port)
+				if dev != nil {
+					dev.Close()
 				}
+				return
 			}
 		}
 	}()
@@ -224,7 +209,7 @@ func SerialDispatch() {
 				}
 				line = line[1:]
 			}
-			data := []byte(line + "\r")
+			data := []byte(line + "\n")
 			if *verbose {
 				fmt.Printf("send: %q\n", data)
 			}
