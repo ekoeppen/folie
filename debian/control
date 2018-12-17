@@ -1,0 +1,24 @@
+Source: folie-cf
+Section: devel
+Priority: optional
+Maintainer: Eckhart Koeppen <eck@40hz.org>
+Uploaders: Eckhart Koeppen <eck@40hz.org>
+Build-Depends: debhelper (>= 10),
+               dh-golang,
+               golang-any,
+               golang-github-chzyer-readline-dev,
+               golang-github-creack-goselect-dev,
+               golang-go.bug-serial.v1-dev
+Standards-Version: 4.1.1
+Homepage: https://github.com/ekoeppen/folie-cf
+XS-Go-Import-Path: github.com/ekoeppen/folie-cf
+
+Package: folie-cf
+Architecture: amd64
+Built-Using: ${misc:Built-Using}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: 
+ This is a modified version of the Forth Live Explorer (https://git.jeelabs.org/jcw/folie)
+ for CoreForthSE (https://github.com/ekoeppen/CoreForthSE).
+ Main changes are in the line ending handling and a simplified network based mode.
