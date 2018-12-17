@@ -70,7 +70,6 @@ func selectPort() string {
 
 func boardReset(enterBoot bool) {
 	if tty != nil {
-		fmt.Println("Resetting board")
 		tty.SetRTS(true)
 		tty.SetDTR(!enterBoot)
 		time.Sleep(time.Millisecond)
