@@ -121,7 +121,7 @@ func wrappedUpload(argv []string) {
 		}
 	}
 
-	if tty != nil && *raw {
+	if tty != nil {
 		// temporarily switch to even parity during upload
 		tty.SetMode(&serial.Mode{BaudRate: *baud, Parity: serial.EvenParity})
 		defer tty.SetMode(&serial.Mode{BaudRate: *baud})

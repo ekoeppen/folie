@@ -19,7 +19,6 @@ import (
 var (
 	port = flag.String("p", "", "serial port (COM*, /dev/cu.*, or /dev/tty*)")
 	baud = flag.Int("b", 115200, "serial baud rate")
-	raw  = flag.Bool("r", false, "use raw instead of telnet protocol")
 
 	tty     serial.Port        // only used for serial connections
 	dev     io.ReadWriteCloser // used for both serial and tcp connections
@@ -70,13 +69,14 @@ func selectPort() string {
 }
 
 func boardReset(enterBoot bool) {
-	if !*raw {
-		telnetReset(enterBoot)
-	} else if tty != nil {
-		tty.SetDTR(true)
-		tty.SetRTS(!enterBoot)
+	if tty != nil {
+		fmt.Println("Resetting board")
+		tty.SetRTS(true)
+		tty.SetDTR(!enterBoot)
 		time.Sleep(time.Millisecond)
-		tty.SetDTR(false)
+		tty.SetRTS(false)
+	} else {
+		telnetReset(enterBoot)
 	}
 	time.Sleep(time.Millisecond)
 }
@@ -114,9 +114,8 @@ func blockUntilOpen() {
 	// use readline's Stdout to force re-display of current input
 	fmt.Fprintf(console.Stdout(), "[connected to %s]\n", path.Base(*port))
 
-	if *raw && tty != nil {
-		tty.SetRTS(true)
-		tty.SetDTR(false)
+	if tty != nil {
+		boardReset(false)
 	} else {
 		telnetInit()
 	}
