@@ -240,10 +240,6 @@ func SpecialCommand(line string) bool {
 			fmt.Println(line)
 			wrappedSend(cmd)
 
-		case "!u", "!upload":
-			fmt.Println(line)
-			wrappedUpload(cmd)
-
 		default:
 			return false
 		}
@@ -255,10 +251,6 @@ const helpMsg = `
 Special commands, these can also be abbreviated as "!r", etc:
   !reset          reset the board, same as ctrl-c
   !send <file>    send text file to the serial port, expand "include" lines
-  !upload         show the list of built-in firmware images
-  !upload <n>     upload built-in image <n> using STM32 boot protocol
-  !upload <file>  upload specified firmware image (bin or hex format)
-  !upload <url>   fetch firmware image from given URL, then upload it
 Utility commands:
   !cd <dir>       change directory (or list current one if not specified)
   !ls <dir>       list contents of the specified (or current) directory
